@@ -7,9 +7,9 @@ code = 0
 a = 0
 b = 0
 
-def CheckSum2020(a,b):
-	if a + b == 2020:
-		code = a*b
+def CheckSum2020(a,b,c):
+	if a + b +c == 2020:
+		code = a*b*c
 		#print("The answer has been found! ",a," and ",b," equal 2020!\n")
 		#print("Multiplying those together is ",code)
 		return code
@@ -24,15 +24,20 @@ with open(input_file) as csvfile:
 
 i = 0
 j = 0
+k = 0
 
 for i in data:
 	if code != 0:
 		break
 	j = 0
 	for j in data:
-		code = CheckSum2020(i,j)
 		if code != 0:
-			print("The magic code is: ",code, "using ", i, " and ",j)
 			break
+		k = 0
+		for k in data:
+			code = CheckSum2020(i,j,k)
+			if code != 0:
+				print("The magic code is: ",code, "using ",i," ",j," and ",k)
+				break
 
  
