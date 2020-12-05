@@ -1,0 +1,7 @@
+def find_code(data):
+	for i in data:
+	    for j in data:
+	        for k in data:
+	            code = blah(i,j,k)
+	            if code:
+	                return code
