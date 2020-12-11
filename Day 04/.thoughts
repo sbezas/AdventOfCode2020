@@ -3,3 +3,6 @@ I felt that I was starting this one off with some elegance, but quickly fell apa
 Opportunites:
 	Was there a way to cycle through the list of fields for Part 1 instead of explicitly listing each one? I created the array [fields], I could have just counted the number of valid records and kept a tally, but couldn't sort out how I could assign the value as I was looping through the list of passports. I wanted to be able to create a variable using the list element as the prefix and then a static Val or Loc for the suffix, but not sure how to do that
 	For the multiple OR values, have it reference a list rather than typing them all out. I could have done another loop, but was weary of yet another nested loop.
+	
+Feedback received:
+	Instead of nested if statements in the main code block, create functions and hide that mess all away. This makes it more clear and easy to understand the main logic and if you need to understand the details of the function you can dig into that
