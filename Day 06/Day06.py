@@ -48,6 +48,28 @@ script, input_file = argv
 with open(input_file) as f: 
 	contents = f.read() 
 
-responses = contents.split()
+groupresponses = contents.split("\n\n")
 
-print(responses)
+def listToString(groupList):
+	groupString = ""
+	for ele in groupList:
+		groupString += ele
+	return groupString
+
+def countUnique(groupString):
+	group_set = set(groupString)
+	n = len(group_set)
+	return n
+
+totalYes = 0
+for i in groupresponses:
+	split = i.split()
+#	print(split)
+	groupString = listToString(split)
+	n = countUnique(groupString)
+	totalYes += n
+#	print(groupString)
+#	print("Number of unique values: ", n)
+#	print("\n")
+
+print("Total Yes Responses:", totalYes)
