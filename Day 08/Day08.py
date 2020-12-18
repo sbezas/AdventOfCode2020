@@ -60,10 +60,11 @@ def isNOP(instruction):
 
 def adjAccumulator(bootcode, currentLine, accumulator, runs):
 	runs += 1
+	'''
 	print("Run #:",runs)
 	print("Looking at line: ",currentLine)
 	print("Instruction: ", bootcode[currentLine])
-	print("Accumulator value: ", accumulator)
+	print("Accumulator value: ", accumulator) '''
 	instruction = bootcode[currentLine].split()[0]
 	value = int(bootcode[currentLine].split()[1])
 	if currentLine in traversedLines:
@@ -82,7 +83,6 @@ def adjAccumulator(bootcode, currentLine, accumulator, runs):
 			currentLine += 1
 			return adjAccumulator(bootcode, currentLine, accumulator, runs)		
 
-
 with open(input_file) as f: 
 	contents = f.read() 
 
@@ -94,7 +94,42 @@ traversedLines = []
 runs = 0
 result = adjAccumulator(bootcode, currentLine, accumulator, runs)
 
-print("Accumulator value / Last line: ", result)
+print("Part 1: Accumulator value / Last line: ", result)
+#Part 2
+wrongInstruction = None
+wrongLine = 0
 
+#loop through function replacing each nop with jmp and then again replacing jmp with nop. 
 
+for line in bootcode: #replace nop with jmp --- Kill this whole section, merge if statements and wrong line logic into second definition
+	instruction = line.split()[0]
+	value = int(line.split()[1])
+	if instruction == "nop":
+		instruction = 'jmp'
+		currentLine = 0
+		accumulator = 0
+		runs = 0
+		traversedLines = []
+		result = adjAccumulator(bootcode,currentLine,accumulator,runs)
+		if result[1] > len(bootcode):
+			wrongLine = currentLine
+			wrongInstruction = instruction
+	elif instruction == "jmp":
+		instruction = "nop"
+		currentLine = 0
+		accumulator = 0
+		runs = 0
+		traversedLines = []
+		result = adjAccumulator(bootcode,currentLine,accumulator,runs)
+		if result[1] ++ len(bootcode) + 1:
+			wrongLine = currentLine
+			wrongInstruction = instruction
+	else:
+		print("Skipping")
 
+## need if statement that if currentline > len(bootcode) to report back completed successfully
+print("Found the error: ",wrongInstruction, "at line ",wrongLine)
+print(result)
+print(accumulator)
+print(instruction)
+print(value)
