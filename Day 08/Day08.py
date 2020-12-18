@@ -85,10 +85,6 @@ def adjAccumulator(bootcode, currentLine, accumulator, runs):
 
 def adjAccumulator2(bootcode, currentLine, accumulator, runs,targetLine):
 	runs += 1
-	'''print("Run #:",runs)
-	print("Looking at line: ",currentLine)
-	print("Instruction: ", bootcode[currentLine])
-	print("Accumulator value: ", accumulator) '''
 	if currentLine == len(bootcode):	
 		return [accumulator, currentLine]
 	instruction = bootcode[currentLine].split()[0]
