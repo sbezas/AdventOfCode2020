@@ -83,6 +83,37 @@ def adjAccumulator(bootcode, currentLine, accumulator, runs):
 			currentLine += 1
 			return adjAccumulator(bootcode, currentLine, accumulator, runs)		
 
+def adjAccumulator2(bootcode, currentLine, accumulator, runs,targetLine):
+	runs += 1
+	'''print("Run #:",runs)
+	print("Looking at line: ",currentLine)
+	print("Instruction: ", bootcode[currentLine])
+	print("Accumulator value: ", accumulator) '''
+	if currentLine == len(bootcode):	
+		return [accumulator, currentLine]
+	instruction = bootcode[currentLine].split()[0]
+	if targetLine == currentLine:
+		if instruction == "nop":
+			instruction = "jmp"
+		elif instruction == "jmp":
+			instruction = "nop"
+	value = int(bootcode[currentLine].split()[1])
+	if currentLine in traversedLines:
+		#print("Recursing threshold met!")
+		return [accumulator, currentLine]
+	else:
+		traversedLines.append(currentLine)
+		if isAccumulator(instruction) == True:
+			accumulator += value
+			currentLine += 1
+			return adjAccumulator2(bootcode, currentLine, accumulator, runs,targetLine)
+		if isJump(instruction) == True:
+			currentLine += value
+			return adjAccumulator2(bootcode, currentLine, accumulator, runs,targetLine)
+		if isNOP(instruction) == True:
+			currentLine += 1
+			return adjAccumulator2(bootcode, currentLine, accumulator, runs,targetLine)		
+
 with open(input_file) as f: 
 	contents = f.read() 
 
@@ -95,41 +126,31 @@ runs = 0
 result = adjAccumulator(bootcode, currentLine, accumulator, runs)
 
 print("Part 1: Accumulator value / Last line: ", result)
+
 #Part 2
 wrongInstruction = None
 wrongLine = 0
-
+targetLine = 0
+finalResult = 0
+finalAccumulator = 0
+finalInstruction = None
+finalValue = 0
 #loop through function replacing each nop with jmp and then again replacing jmp with nop. 
+targetLine = 0
 
-for line in bootcode: #replace nop with jmp --- Kill this whole section, merge if statements and wrong line logic into second definition
-	instruction = line.split()[0]
-	value = int(line.split()[1])
-	if instruction == "nop":
-		instruction = 'jmp'
-		currentLine = 0
-		accumulator = 0
-		runs = 0
-		traversedLines = []
-		result = adjAccumulator(bootcode,currentLine,accumulator,runs)
-		if result[1] > len(bootcode):
-			wrongLine = currentLine
-			wrongInstruction = instruction
-	elif instruction == "jmp":
-		instruction = "nop"
-		currentLine = 0
-		accumulator = 0
-		runs = 0
-		traversedLines = []
-		result = adjAccumulator(bootcode,currentLine,accumulator,runs)
-		if result[1] ++ len(bootcode) + 1:
-			wrongLine = currentLine
-			wrongInstruction = instruction
-	else:
-		print("Skipping")
+for line in bootcode: 
+	currentLine = 0
+	accumulator = 0
+	runs = 0
+	traversedLines = []
+	result = adjAccumulator2(bootcode,currentLine, accumulator, runs, targetLine)
+	if result[1] == len(bootcode):
+		wrongLine = targetLine
+		finalAccumulator = result[0]
+		finalResult = result
+		finalInstruction = result[0]
+		break
+	targetLine += 1
 
-## need if statement that if currentline > len(bootcode) to report back completed successfully
-print("Found the error: ",wrongInstruction, "at line ",wrongLine)
-print(result)
-print(accumulator)
-print(instruction)
-print(value)
+print("Part 2: ",finalAccumulator, "is Accumulator at line ",wrongLine)
+
