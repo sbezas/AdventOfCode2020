@@ -60,11 +60,6 @@ def isNOP(instruction):
 
 def adjAccumulator(bootcode, currentLine, accumulator, runs):
 	runs += 1
-	'''
-	print("Run #:",runs)
-	print("Looking at line: ",currentLine)
-	print("Instruction: ", bootcode[currentLine])
-	print("Accumulator value: ", accumulator) '''
 	instruction = bootcode[currentLine].split()[0]
 	value = int(bootcode[currentLine].split()[1])
 	if currentLine in traversedLines:
