@@ -91,18 +91,15 @@ adapters = contents.split("\n") #file with each row as an element
 for i in range(0, len(adapters)): 
     adapters[i] = int(adapters[i]) 
 adapters = sorted(adapters)
+adapters.append(adapters[len(adapters)-1]+3)
+
 num1 = 1 #Starting with 1 for outlet joltage
 num2 = 0
-num3 = 1 #Starting with 1 for device
+num3 = 0 
 aLoc = 0
 bLoc = 1
 
-deviceJoltage = max(adapters)+3
-outlet = 0
-
 print(adapters)
-
-print(deviceJoltage)
 
 # if diff = 1, num1 += 1, etc.
 
