@@ -91,94 +91,87 @@ with open(input_file) as f:
 	contents = f.read() 
 		
 def checkOccupied(currentRow, currentCol, oldSeating, lastRow, lastCol):
-	if currentRow != 0:
-		if currentCol == 0:
-			countOccupied += oldSeating[row][col:col+2].count("X")
-		elif currentCol == lastCol:
-			countOccupied += oldSeating[row][col-1:col+1].count("X")
-		else:
-			countOccupied += oldSeating[row][col-1:col+2].count("X")
-		#count previous row
-	#count current row
-	if currentRow < lastRow:
-		countOccupied += 1 #placeholder
-		#count next row
+	countOccupied = 0
+	if currentCol == 0: # If first column, do only count current column and +1
+		if currentRow != 0:
+			countOccupied += oldSeating[currentRow-1][currentCol:currentCol+2].count("#")
+		countOccupied += oldSeating[currentRow][currentCol:currentCol+2].count("#")
+		countOccupied -= oldSeating[currentRow][currentCol].count("#")
+		if currentRow != lastRow-1:
+			countOccupied += oldSeating[currentRow+1][currentCol:currentCol+2].count("#")
+	elif currentCol == lastCol: # If last column, only current column and -1
+		if currentRow != 0:
+			countOccupied += oldSeating[currentRow-1][currentCol-1:currentCol+1].count("#")
+		countOccupied += oldSeating[currentRow][currentCol-1:currentCol+1].count("#")
+		countOccupied -= oldSeating[currentRow][currentCol].count("#")
+		if currentRow != lastRow-1:
+			countOccupied += oldSeating[currentRow+1][currentCol-1:currentCol+1].count("#")
+	else: # all other columns, count all surrounding cells
+		if currentRow != 0:
+			countOccupied += oldSeating[currentRow-1][currentCol-1:currentCol+2].count("#")
+		countOccupied += oldSeating[currentRow][currentCol-1:currentCol+2].count("#")
+		countOccupied -= oldSeating[currentRow][currentCol].count("#")
+		if currentRow != lastRow-1:
+			countOccupied += oldSeating[currentRow+1][currentCol-1:currentCol+2].count("#")
 	return countOccupied
 
-def updateSeat(rowText,currentCol,newSeat):
-   return '%s%s%s'%(rowText[:currentCol],newSeat,rowText[currentCol+1:])
+def updateSeat(newRow,currentCol,newSeat):
+   return '%s%s%s'%(newRow[:currentCol],newSeat,newRow[currentCol+1:])
 
+# Initial Variables and setup
 oldSeating = contents.split("\n") #file with each row as an element
-newSeating = oldSeating
-
+newSeating = oldSeating.copy()
 lastRow = len(oldSeating)
 lastCol = len(oldSeating[0])
+numLoop = 1
+numberChanges = 1
+numOccupiedSeats = 0
 
-#currentSeat = oldSeating[currentRow,currentCol]
-#rowText = oldSeating[currentRow]
-
-
-
-#newSeating[currentRow] = updateSeat(rowText,currentCol,newSeat)
-#rowText = newSeating[currentRow]
-#print(rowText)
-
-
-currentRow = 0
-currentCol = 0
-newSeat = ""
-
-'''
 # Evaluate and update oldSeating chart to newSeating once
-for row in oldSeating:
-	print("Processing Row:",currentRow,":",row)
-	for col in row:
-		currentSeat = col
-		countOccupied = 0
-		print("Processing row/seat:",currentRow,"/",currentCol,":",currentSeat)
-		if currentSeat != ".":
-			print("Doing something, is not the floor")
-		currentCol += 1
-	currentRow += 1
-	currentCol = 0'''
-	
-print("All done!",currentRow,"/",currentCol)
-'''
-~Loop for full old seating chart !
-~Loop for each row !
-Look at old seating chart !
-Look at row X of old seating chart !
-Look at col X of old seating chart !
-Save currentSeat to this value "L", "X", or "." !
-if "." do nothing and increment !
-Determine if change is needed # checkOccupied function
- - look at row -1, col -1 value. if "X" countOccupied += 1
- - look at row -1, col 0 value. if "X" countOccupied += 1
- - look at row -1, col +1 value. if "X" countOccupied += 1
- - look at row 0, col -1 value. if "X" countOccupied += 1 
- - look at row 0, col +1 value. if "X" countOccupied += 1 
- - look at row +1, col -1 value. if "X" countOccupied += 1
- - look at row +1, col 0 value. if "X" countOccupied += 1
- - look at row +1, col +1 value. if "X" countOccupied += 1
-if currentSeat == "X" AND countOccupied >= 4:
-	newSeat = "L"
-	newSeating[currentRow] = updateSeat(rowText,currentCol,newSeat) ## Updates newSeating chart with new value
-if currentSeat == "L" AND countOccupied == 0:
-	newSeat = "X"
-	newSeating[currentRow] = updateSeat(rowText,currentCol,newSeat) ## Updates newSeating chart with new value
-currentCol += 1
-if currentCol > len(rowText):
+while numberChanges != 0:
+	numberChanges = 0
+	currentRow = 0
 	currentCol = 0
-	currentRow += 1
-if currentRow <= len(oldSeating):
-	currentRow += 1
-else
-	break
-~end loop for each row
-~end loop for full old seating chart
-'''
-row = 1
-col = 1
-print(oldSeating[row-1])
-print(oldSeating[row])
-
+	newSeat = ""
+	countOccupied = 0
+	numberChanges = 0
+	for row in oldSeating:
+#		if currentRow != 0:
+#			print("Processing Row:",currentRow-1,":",oldSeating[currentRow-1])
+#		print("Processing Row:",currentRow,":",row)
+#		if currentRow != lastRow-1:
+#			print("Processing Row:",currentRow+1,":",oldSeating[currentRow+1])
+		for col in row:
+			currentSeat = col
+			countOccupied = 0
+#			print("Processing row/seat:",currentRow,"/",currentCol,":",currentSeat)
+			if currentSeat != ".":
+				countOccupied = checkOccupied(currentRow,currentCol,oldSeating,lastRow,lastCol)
+#				print("Number of occupied Seats is:",countOccupied)
+				if (currentSeat == "L") & (countOccupied == 0):
+					newSeat = "#"
+					newSeating[currentRow] = updateSeat(newSeating[currentRow], currentCol, newSeat)
+					numOccupiedSeats += 1
+#					print("Row",currentRow,"was   :",oldSeating[currentRow])
+#					print("Row",currentRow,"is now:",newSeating[currentRow])
+					numberChanges += 1
+				elif (currentSeat == "#") & (countOccupied >= 4):
+					newSeat = "L"
+					newSeating[currentRow] = updateSeat(newSeating[currentRow], currentCol, newSeat)
+					numberChanges += 1
+#					print("Row",currentRow,"was   :",oldSeating[currentRow])
+#					print("Row",currentRow,"is now:",newSeating[currentRow])
+			currentCol += 1
+		currentRow += 1
+		currentCol = 0
+	print("All done with iteration:",numLoop,"Number of changes:",numberChanges)
+	numOccupiedSeats = 0
+	for i in newSeating:
+		numOccupiedSeats += i.count("#")
+	print("Number of occupied seats:",numOccupiedSeats)
+	if numberChanges == 0:
+		print("No changes made! This is iteration:", numLoop)
+		break
+	else:
+		oldSeating = newSeating.copy() # Copy over old with new to begin new comparison
+	numLoop += 1
